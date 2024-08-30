@@ -43,10 +43,10 @@ app.use('/gallery', require('./Routes/gallery.controller'));
 app.use('/blogs', require('./Routes/Blogs/blog.controller'));
 app.use('/blog-category', require('./Routes/Blogs/BlogCategory.controller'));
 app.use('/blog-author', require('./Routes/Blogs/BlogAuthor.controller'));
-app.use('/download', require('./Routes/download.controller'));
 app.use('/logs', require('./Routes/logs.controller'));
+app.use('/products', require('./Routes/product.controller'))
 
 // Start the server
-app.listen(process.env.PORT, () =>
+app.listen(process.env.PORT, () => 
     console.log(`Server is running on ${process.env.PORT}`)
 );

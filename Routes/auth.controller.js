@@ -21,7 +21,6 @@ dotenv.config();
 router.post('/register', [
     body('email').isEmail(),
     body('password').isLength({ min: 3 })],
-    fetchuser,
     async (req, res) => {
         let success = "false"
         const error = validationResult(req);
@@ -46,7 +45,6 @@ router.post('/register', [
                 password: Secure_password,
                 isadmin: req.body.isadmin,
                 userStatus: req.body.userStatus,
-                created_by: req.users.id
             })
 
             const data = {

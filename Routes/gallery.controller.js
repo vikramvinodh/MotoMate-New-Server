@@ -21,7 +21,7 @@ const uploadToS3 = async (file) => {
     const key = `gallery/${Date.now().toString()}-${Math.random().toString(36).substring(2, 15)}-${file.originalname}`;
 
     const params = {
-        Bucket: 'teamtrip',
+        Bucket: 'zenit-space-1',
         Key: key,
         Body: file.buffer,
         ContentType: file.mimetype,
@@ -37,7 +37,7 @@ const deleteFromS3 = async (fileUrl) => {
     const key = fileUrl.split('/').slice(-1)[0];
 
     const params = {
-        Bucket: 'teamtrip',
+        Bucket: 'zenit-space-1',
         Key: `gallery/${key}`
     };
 
@@ -45,16 +45,12 @@ const deleteFromS3 = async (fileUrl) => {
 };
 
 // Upload an image
-router.post("/main-gallery/upload", upload.single("image"),fetchuser, async (req, res) => {
-    const userId = req.users.id;
+router.post("/main-gallery/upload", upload.single("image"), async (req, res) => {
     try {
-        // Upload image to S3 and get the URL
         const s3Url = await uploadToS3(req.file);
 
-        // Create new image record in the database
         const newImage = new MainGallery({
-            imagesLink: s3Url, // S3 file URL
-            UserUploaded: userId
+            imagesLink: s3Url,
         });
 
         await newImage.save();
@@ -94,7 +90,7 @@ router.get('/main-gallery/all', async (req, res) => {
     try {
         // Query the MainGallery collection to get all images
         const images = await MainGallery.find();
-        
+
         // Respond with the list of images
         res.status(200).json(images);
     } catch (error) {
