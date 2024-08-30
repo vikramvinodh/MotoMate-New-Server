@@ -22,7 +22,7 @@ const uploadToS3 = async (file) => {
 
     const params = {
         Bucket: 'zenit-space-1',
-        Key: key,
+        Key: `test/${key}`,
         Body: file.buffer,
         ContentType: file.mimetype,
         ACL: 'public-read'

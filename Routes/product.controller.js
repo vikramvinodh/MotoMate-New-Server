@@ -47,7 +47,7 @@ router.put('/:id', async (req, res) => {
         if (!updatedProduct) {
             return res.status(404).json({ error: 'Product not found' });
         }
-        res.status(200).json(updatedProduct);
+        res.status(201).json(updatedProduct);
     } catch (err) {
         res.status(500).json({ error: 'Failed to update product' });
     }

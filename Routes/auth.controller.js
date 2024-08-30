@@ -31,11 +31,11 @@ router.post('/register', [
 
         try {
             let user = await User.findOne({ email: req.body.email })
-           
+
             if (user) {
                 return res.status(400).json({ success, msg: 'user exists' });
             }
-            
+
             const Salt = await bcrypt.genSalt(15);
             const Secure_password = await bcrypt.hash(req.body.password, Salt);
 
@@ -100,7 +100,7 @@ router.post('/login',
             res.status(201).json({ success, Token })
         }
         catch (error) {
-
+            console.log(error)
             res.status(500).json({ success, error: "Internal error" })
         }
     }

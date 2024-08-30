@@ -7,7 +7,6 @@ const bodyParser = require('body-parser');
 const compression = require('compression');
 const helmet = require('helmet');
 const morgan = require('morgan');
-const { connectToRedis } = require('./config/redis');
 
 // Load environment variables
 dotenv.config();
@@ -18,9 +17,6 @@ const app = express();
 // Connect to MongoDB
 connectToMongo();
 
-// Connect to Redis
-connectToRedis()
-
 // Middleware
 app.use(helmet());
 app.use(compression());
@@ -30,8 +26,11 @@ app.use(express.json());
 app.use(morgan('common'));
 
 // Enable CORS for all routes
+const corsOptions = {
+    origin: ['http://localhost:4000', 'http://localhost:3000'],
+    allowedHeaders: ['Content-Type', 'Authorization', 'auth-token'],
+};
 app.use(cors());
-
 // Static file serving
 app.use(express.static(path.join(__dirname, 'dist')));
 app.use('/public', express.static(path.join(__dirname, 'public')));
@@ -47,6 +46,6 @@ app.use('/logs', require('./Routes/logs.controller'));
 app.use('/products', require('./Routes/product.controller'))
 
 // Start the server
-app.listen(process.env.PORT, () => 
+app.listen(process.env.PORT, () =>
     console.log(`Server is running on ${process.env.PORT}`)
 );
