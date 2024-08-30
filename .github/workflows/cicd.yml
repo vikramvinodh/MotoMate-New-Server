@@ -1,0 +1,37 @@
+name: CICD
+
+on:
+  push:
+    branches: [main]
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout source
+        uses: actions/checkout@v3
+      - name: Login to Docker Hub
+        run: docker login -u ${{ secrets.DOCKER_USERNAME }} -p ${{ secrets.DOCKER_PASSWORD }}
+      - name: Remove previous Docker container (if exists)
+        run: docker rm -f express-container || true
+      - name: Remove previous Docker image (if exists)
+        run: docker rmi -f kandradigital/team-trip-server:latest || true
+      - name: Build Docker image
+        run: docker build -t kandradigital/team-trip-server .
+      - name: Publish image to Docker Hub
+        run: docker push kandradigital/team-trip-server:latest
+        
+  deploy:
+    needs: build
+    runs-on: self-hosted
+    steps:
+      - name: Stop and remove previous Docker container
+        run: |
+          docker stop express-container || true
+          docker rm express-container || true
+      - name: Login to Docker Hub
+        run: docker login -u ${{ secrets.DOCKER_USERNAME }} -p ${{ secrets.DOCKER_PASSWORD }}
+      - name: Pull image from Docker Hub
+        run: docker pull kandradigital/team-trip-server:latest
+      - name: Run Docker container
+        run: docker run -d -p 5050:5050 --name express-container kandradigital/team-trip-server
